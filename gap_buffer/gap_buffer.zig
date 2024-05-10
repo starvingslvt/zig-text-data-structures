@@ -4,6 +4,10 @@ pub fn GapBufferType() type {
     return struct {
         const GapBuffer = @This();
 
+        const GapBufferError = error {
+            GrowSizeLessThanOne,
+        };
+
         allocator: std.mem.Allocator,
         size: usize,
         gap_start: usize,
