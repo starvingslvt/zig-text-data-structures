@@ -39,7 +39,15 @@ pub fn GapBufferType() type {
             buffer.allocator.free(buffer.buffer);
         }
 
-        pub fn insertChar(buffer: *GapBuffer, char: u8) void {}
+        pub fn insertChar(buffer: *GapBuffer, char: u8) !void {
+            if (buffer.gap_start == buffer.gap_end) {
+                buffer._grow() catch return GapBufferError.FailedToGrow;
+            }
+
+            buffer.buffer[buffer.gap_start] = char;
+            buffer.gap_start += 1;
+        }
+
         pub fn insertStr(buffer: *GapBuffer, str: []const u8) void {}
         pub fn shiftBufferToPosition(buffer: *GapBuffer, position: usize) void {}
 
