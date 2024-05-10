@@ -34,7 +34,10 @@ pub fn GapBufferType() type {
             };
         }
 
-        pub fn deinit(buffer: *GapBuffer) void {}
+        pub fn deinit(buffer: *GapBuffer) void {
+            buffer.allocator.free(buffer.buffer);
+        }
+
         pub fn insertChar(buffer: *GapBuffer, char: u8) void {}
         pub fn insertStr(buffer: *GapBuffer, str: []const u8) void {}
         pub fn shiftBufferToPosition(buffer: *GapBuffer, position: usize) void {}
