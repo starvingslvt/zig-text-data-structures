@@ -6,6 +6,7 @@ pub fn GapBufferType() type {
 
         const GapBufferError = error {
             GrowSizeLessThanOne,
+            FailedToGrow,
         };
 
         allocator: std.mem.Allocator,
