@@ -48,7 +48,12 @@ pub fn GapBufferType() type {
             buffer.gap_start += 1;
         }
 
-        pub fn insertStr(buffer: *GapBuffer, str: []const u8) void {}
+        pub fn insertStr(buffer: *GapBuffer, str: []const u8) !void {
+            for (str) |char| {
+                try buffer.insertChar(char);
+            }
+        }
+
         pub fn shiftBufferToPosition(buffer: *GapBuffer, position: usize) void {}
 
         fn _grow(buffer: *GapBuffer) !void {
