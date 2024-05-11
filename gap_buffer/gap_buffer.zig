@@ -101,3 +101,16 @@ pub fn GapBufferType() type {
         }
     };
 }
+
+test "GapBuffer" {
+    const testing = std.testing;
+
+    var gap_buffer = try GapBufferType().init(2, 2, testing.allocator);
+    defer gap_buffer.deinit();
+
+    try gap_buffer.insertChar('h');
+    try gap_buffer.insertChar('e');
+    try gap_buffer.insertChar('l');
+    try gap_buffer.insertChar('l');
+    try gap_buffer.insertChar('o');
+}
