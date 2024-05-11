@@ -20,11 +20,12 @@ pub fn GapBufferType() type {
         pub fn init(initial_size: usize, grow_size: usize, allocator: std.mem.Allocator) !GapBuffer {
             if (grow_size == 0) return GapBufferError.GrowSizeLessThanOne;
 
-            const true_initial_size = if (initial_size == 0) {
-                grow_size;
+            const true_initial_size: usize = undefined;
+            if (initial_size == 0) {
+                true_initial_size = grow_size;
             } else {
-                initial_size;
-            };
+                true_initial_size = initial_size;
+            }
 
             return GapBuffer{
                 .allocator = allocator,
