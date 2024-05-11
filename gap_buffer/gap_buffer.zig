@@ -79,13 +79,14 @@ pub fn GapBufferType() type {
         fn _grow(buffer: *GapBuffer) !void {
             const new_size = buffer.size + buffer.grow_size;
 
-            buffer.allocator.resize(buffer.buffer, new_size) catch {
+            const resize_result = buffer.allocator.resize(buffer.buffer, new_size);
+            if (resize_result == false) {
                 const new_buffer = try buffer.allocator.alloc(u8, new_size);
                 @memcpy(new_buffer[0..buffer.size], buffer.buffer[0..buffer.size]);
 
                 buffer.allocator.free(buffer.buffer);
                 buffer.buffer = new_buffer;
-            };
+            }
 
             buffer.size = new_size;
             buffer.gap_end += buffer.grow_size;
