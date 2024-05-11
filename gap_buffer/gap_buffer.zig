@@ -55,11 +55,29 @@ pub fn GapBufferType() type {
             }
         }
 
-        pub fn shiftBufferToPosition(buffer: *GapBuffer, position: usize) void {}
+        pub fn shiftBufferToPosition(buffer: *GapBuffer, position: usize) !void {
+            assert(buffer.gap_end >= buffer.gap_start);
+
+            const gap_length = buffer.gap_end - buffer.gap_start;
+            const clamped_position = @min(position, buffer.size - gap_length);
+
+            var char_delta: usize = 0;
+            if (clamped_position < buffer.gap_start) {
+                char_delta = buffer.gap_start - clamped_position;
+                try buffer._memmove(buffer.buffer[buffer.gap_end - char_delta .. buffer.gap_end], buffer.buffer[buffer.gap_start - char_delta .. buffer.gap_start], char_delta);
+                buffer.gap_start -= char_delta;
+                buffer.gap_end -= char_delta;
+            } else if (clamped_position > buffer.gap_start) {
+                char_delta = clamped_position - buffer.gap_start;
+                try buffer._memmove(buffer.buffer[buffer.gap_start .. buffer.gap_start + char_delta], buffer.buffer[buffer.gap_end .. buffer.gap_end + char_delta], char_delta);
+                buffer.gap_start += char_delta;
+                buffer.gap_end += char_delta;
+            }
+        }
 
         fn _grow(buffer: *GapBuffer) !void {
             const new_size = buffer.size + buffer.grow_size;
-            
+
             buffer.allocator.resize(buffer.buffer, new_size) catch {
                 const new_buffer = try buffer.allocator.alloc(u8, new_size);
                 @memcpy(new_buffer[0..buffer.size], buffer.buffer[0..buffer.size]);
