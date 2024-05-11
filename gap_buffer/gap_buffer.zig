@@ -5,7 +5,7 @@ pub fn GapBufferType() type {
     return struct {
         const GapBuffer = @This();
 
-        const GapBufferError = error {
+        const GapBufferError = error{
             GrowSizeLessThanOne,
             FailedToGrow,
         };
@@ -26,7 +26,7 @@ pub fn GapBufferType() type {
                 initial_size;
             };
 
-            return GapBuffer {
+            return GapBuffer{
                 .allocator = allocator,
                 .grow_size = grow_size,
                 .size = initial_size,
