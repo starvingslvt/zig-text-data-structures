@@ -71,5 +71,13 @@ pub fn GapBufferType() type {
             buffer.size = new_size;
             buffer.gap_end += buffer.grow_size;
         }
+
+        fn _memmove(buffer: *GapBuffer, dest: []const u8, src: []const u8, size: usize) !void {
+            const temp_buffer = try buffer.allocator.alloc(u8, size);
+            defer buffer.allocator.free(temp_buffer);
+
+            @memcpy(temp_buffer, src);
+            @memcpy(dest, temp_buffer);
+        }
     };
 }
