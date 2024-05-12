@@ -130,7 +130,13 @@ test "GapBuffer" {
     try gap_buffer.insertChar(' ');
     try gap_buffer.insertStr("zig!");
 
-    const buffer_check = [_]u8{ 'h', 'e', 'l', 'l', 'o', ' ', 'z', 'i', 'g', '!' };
+    try gap_buffer.shiftBufferToPosition(5);
+    try gap_buffer.insertStr("w,");
 
-    try expect(std.mem.eql(u8, gap_buffer.buffer[0..gap_buffer.gap_start], &buffer_check));
+    const bufSlice = try gap_buffer.getAsSlice();
+    defer gap_buffer.allocator.free(bufSlice);
+
+    const buffer_check = [_]u8{ 'h', 'e', 'l', 'l', 'o', 'w', ',', ' ', 'z', 'i', 'g', '!' };
+
+    try expect(std.mem.eql(u8, bufSlice, &buffer_check));
 }
