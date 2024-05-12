@@ -89,10 +89,20 @@ pub fn GapBufferType() type {
 
         fn _grow(buffer: *GapBuffer) !void {
             const new_size = buffer.size + buffer.grow_size;
+            const start = buffer.gap_start;
+            const end = buffer.gap_end;
 
             buffer.buffer = try buffer.allocator.realloc(buffer.buffer, new_size);
+            buffer.gap_start = new_size - buffer.grow_size;
+            buffer.gap_end = buffer.size;
+
+            buffer.shiftBufferToPosition(start) catch |e| {
+                buffer.gap_start = start;
+                buffer.gap_end = end;
+                return e;
+            };
+
             buffer.size = new_size;
-            buffer.gap_end += buffer.grow_size;
         }
 
         fn _memmove(buffer: *GapBuffer, dest: []u8, src: []const u8, size: usize) !void {
