@@ -84,7 +84,7 @@ pub fn GapBufferType() type {
             buffer.gap_end += buffer.grow_size;
         }
 
-        fn _memmove(buffer: *GapBuffer, dest: []const u8, src: []const u8, size: usize) !void {
+        fn _memmove(buffer: *GapBuffer, dest: []u8, src: []const u8, size: usize) !void {
             const temp_buffer = try buffer.allocator.alloc(u8, size);
             defer buffer.allocator.free(temp_buffer);
 
