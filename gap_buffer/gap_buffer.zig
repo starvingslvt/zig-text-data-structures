@@ -76,6 +76,17 @@ pub fn GapBufferType() type {
             }
         }
 
+        pub fn getAsSlice(buffer: *GapBuffer) ![]const u8 {
+            const left = buffer.buffer[0..buffer.gap_start];
+            const right = buffer.buffer[buffer.gap_end..buffer.size];
+            const slice = try buffer.allocator.alloc(u8, left.len + right.len);
+
+            @memcpy(slice[0..left.len], left);
+            @memcpy(slice[left.len..slice.len], right);
+
+            return slice;
+        }
+
         fn _grow(buffer: *GapBuffer) !void {
             const new_size = buffer.size + buffer.grow_size;
 
