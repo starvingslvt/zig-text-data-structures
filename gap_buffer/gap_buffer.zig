@@ -96,6 +96,7 @@ pub fn GapBufferType() type {
 
 test "GapBuffer" {
     const testing = std.testing;
+    const expect = testing.expect;
 
     var gap_buffer = try GapBufferType().init(2, 2, testing.allocator);
     defer gap_buffer.deinit();
@@ -105,4 +106,10 @@ test "GapBuffer" {
     try gap_buffer.insertChar('l');
     try gap_buffer.insertChar('l');
     try gap_buffer.insertChar('o');
+    try gap_buffer.insertChar(' ');
+    try gap_buffer.insertStr("zig!");
+
+    const buffer_check = [_]u8{ 'h', 'e', 'l', 'l', 'o', ' ', 'z', 'i', 'g', '!' };
+
+    try expect(std.mem.eql(u8, gap_buffer.buffer[0..gap_buffer.gap_start], &buffer_check));
 }
